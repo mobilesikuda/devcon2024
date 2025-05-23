@@ -1,0 +1,23 @@
+{% extends "temple.html" %}
+
+{% block content %} 
+<div class="m-3">
+<form method="post">
+    {% csrf_token %}
+  <div class="form-group m-3">
+    {{ form.number.label_tag }}
+    {{ form.number }}
+  </div>
+  <div class="form-group m-3">
+    {{ form.date.label_tag }}
+    {{ form.date }}
+  </div>
+  <div class="form-group m-3">
+    {{ form.organization.label_tag }}
+    {{ form.organization }}
+  </div>
+  <button type="submit">Записать</button>
+  <button href="orders/">Отмена</button>
+</form>
+</div>
+{% endblock %}
