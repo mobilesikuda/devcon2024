@@ -1,16 +1,18 @@
 from django.shortcuts import redirect
 from django.http import HttpResponse
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.views import APIView
 from django.shortcuts import render
 from django.template import loader
 from .models import OrderModel, ManagerModel
 from .forms import OrderForm
 import uuid
-
+from .serializers import OrderSerializer
 
 def get_organization_by_request(request):
     org = None
     if request.user.is_authenticated:
-        orders = OrderModel.objects.all()
         manager = ManagerModel.objects.filter(user=request.user).first()
         if manager != None:
            org = manager.organization
@@ -55,4 +57,40 @@ def order_item(request):
     return render(request, 'order_item.html', {'form': form})    
     
 def order_root(request):
-    return redirect('orders/')    
+    return redirect('orders/') 
+
+class OrdersListAPI(APIView):
+    #permission_classes = (permissions.IsAuthenticated,)
+    def get(self, request, format=None):
+         articles = OrderModel.objects.all()
+         serializer = OrderSerializer(articles, many=True)
+         return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = OrderSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+      
+
+class OrdersAPI(APIView):
+    #permission_classes = (permissions.IsAuthenticated,)
+      
+    def get(self, request, pk, format=None):
+        order = OrderModel.objects.get(pk=pk)
+        serializer = OrderSerializer(order)
+        return Response(serializer.data)   
+
+    def put(self, request, pk, format=None):
+        order = OrderModel.objects.get(pk=pk)
+        serializer = OrderSerializer(order, data=request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  
+
+    def delete(self, request, pk, format=None):
+        order = OrderModel.objects.get(pk=pk)
+        order.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)  
