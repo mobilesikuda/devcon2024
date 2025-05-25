@@ -36,7 +36,7 @@ def order_list(request):
     
     org = get_organization_by_request(request)
     orders = get_orders_by_request(request, org)
-    template = loader.get_template('orders_list.html')
+    template = loader.get_template('orders_all.html')
     context = {
         'title': "Заказы для организации: "+"Все организации" if org is None else org.name,
         'context': orders,
