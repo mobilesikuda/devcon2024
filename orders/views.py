@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from django.shortcuts import render
 from django.template import loader
-from .models import OrderModel, ManagerModel
+from .models import OrderModel, ManagerModel, OrganizationModel, AssortmentModel
 from .forms import OrderForm
 import uuid
 from .serializers import OrderSerializer
@@ -35,11 +35,18 @@ def order_list(request):
         return redirect('login')
     
     org = get_organization_by_request(request)
+    orgs = [org]
+    if org is None:
+        orgs = OrganizationModel.objects.all()
+    assorts = AssortmentModel.objects.all()
     orders = get_orders_by_request(request, org)
     template = loader.get_template('orders_all.html')
+
     context = {
         'title': "Заказы для организации: "+"Все организации" if org is None else org.name,
         'context': orders,
+        'orgs': orgs,
+        'assorts': assorts
     }
     return HttpResponse(template.render(context, request))
     
@@ -67,7 +74,10 @@ class OrdersListAPI(APIView):
          return Response(serializer.data)
 
     def post(self, request, format=None):
+        print(request.data)
         serializer = OrderSerializer(data=request.data)
+        # if serializer.uuid == "":
+        #     serializer.uuid = uuid.uuid4()
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -80,6 +90,7 @@ class OrdersAPI(APIView):
     def get(self, request, pk, format=None):
         order = OrderModel.objects.get(pk=pk)
         serializer = OrderSerializer(order)
+        print(f"DEBUG...")
         return Response(serializer.data)   
 
     def put(self, request, pk, format=None):
