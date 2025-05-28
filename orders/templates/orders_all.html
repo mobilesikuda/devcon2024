@@ -35,94 +35,51 @@
         <h4 class="modal-title" id="itemModalTitle"></h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body m-3" id="itemModalBody">
-        <div class="input-group mb-3">
-          <span class="input-group-text">Номер</span>
-          <input type="text" class="form-control" placeholder="Номер документа" id="numberOrder">
-          <span class="input-group-text"> от </span>
-          <input type="date" class="form-control" placeholder="Дата документа" id="dateOrder">
-        </div>
-        <div class="input-group mb-3">
-          <label class="input-group-text" for="organizationOrder">Организация</label>
-          <select class="form-select" id="organizationOrder" value="">
-            <option selected>Выберите организацию...</option>
-            {% for org in orgs %}
-              <option value="{{ org.pk }}">{{ org.name }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="input-group mb-3">
+      <form method="post" action="new">
+        <div class="modal-body m-3" id="itemModalBody"></div>
+          {% csrf_token %}
+          <h2>Создание заказа</h2>
+          {{ order_form.as_p }}
           <button type="button" class="btn btn-secondary" onclick="onNewLine()">Новая строка</button>
-            <!-- input class="form-control me-auto" type="text" onchange="onFilter()" id="findString" placeholder="Фильтр..." value="{{ filter }}"--> 
+          <h2>Ассортимент заказа</h2>
+          {{ assort_formset.management_form }}
+          {% for form in assort_formset %}
+              {{ form.as_p }}
+          {% endfor %}
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" onclick="onWriteItem()">Записать</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
+          </div>
         </div>
-        <div class="input-group mb-3">     
-          <table class="table table-striped table-bordered">
-              <thead>
-              <tr class="align-items-center"> 
-                  <th>Номер</th>
-                  <th>Номенклатура</th>
-                  <th>Количество</th>
-              </tr>
-              <tbody class="table-group-divider" id="itemModelTable">
-              </tbody>
-              </thead>
-          </table>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="onWriteItem()">Записать</button>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
-      </div>
+      </form>
     </div>
   </div>
 </div>  
-<script type="text/javascript">
+<script>
+  
   function onNewItem(){ 
     document.getElementById("itemModalTitle").innerHTML = "Новый заказ"  
   }
   async function onViewItem(id=""){ 
     document.getElementById("itemModalTitle").innerHTML = "Редактирование заказа"
     var itemModelTable  = document.getElementById("itemModelTable") 
-    //get data by id to dysplay it 
     fetch('/orders-api/'+id)
       .then(response => response.json())
       .then(commits => {
-        document.getElementById("organizationOrder").value = commits.organization
+        document.getElementById("id_organization").value = commits.organization
+        number: document.getElementById("id_number").value = commits.number
+        document.getElementById("id_date").value = commits.date
       });
   }
-  function onWriteItem(){
-    //fecth new data 
-    fetch('/orders-api/', 
-      { method: "POST",
-        credentials: "same-origin",
-        headers: {
-          'X-CSRFToken': getCookie('csrftoken'),
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            uuid: "",
-            number: document.getElementById("numberOrder").value,
-            date: document.getElementById("dateOrder").value,
-            organization: document.getElementById("organizationOrder").value
-        })  
-      })
-  }  
   function onNewLine(){ 
-    var itemTable  = document.getElementById("itemModalTable")  
-    itemModelTable.innerHTML += '\
-        <tr>\
-        <td><input type="text" id="numLineOrder1" name="num1"></td> \
-        <td>\
-          <select class="form-select" id="AssortimentLineOrder" value="">\
-            <option selected>Выберите товар...</option>\
-            {% for asort in assorts %}\
-              <option value="{{ asort.pk }}">{{ asort.name }}</option>\
-            {% endfor %}\
-          </select>\
-        </td> \
-        <td><input type="number" id="countLineOrder1" name="count1"></td> \
-        </tr>';
+    const totalForms = document.querySelector('#id_assort_set-TOTAL_FORMS'); //#id_book_set-TOTAL_FORMS'
+    const formIndex = totalForms.value; // Получаем индекс следующей формы
+    const newForm = document.querySelector('.empty-form').cloneNode(true);
+
+    newForm.innerHTML = newForm.innerHTML.replace(/__prefix__/g, formIndex);
+    formsetContainer.appendChild(newForm);
+
+    totalForms.value = parseInt(totalForms.value) + 1;
   }
 </script>
 {% endblock %}

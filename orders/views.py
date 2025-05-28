@@ -6,8 +6,7 @@ from rest_framework.views import APIView
 from django.shortcuts import render
 from django.template import loader
 from .models import OrderModel, ManagerModel, OrganizationModel, AssortmentModel
-from .forms import OrderForm
-import uuid
+from .forms import OrderForm, OrderAssortFormSet
 from .serializers import OrderSerializer
 
 def get_organization_by_request(request):
@@ -34,34 +33,63 @@ def order_list(request):
     if not request.user.is_authenticated:
         return redirect('login')
     
+    if request.method == 'POST':
+        print(request.POST.get("number"))
+        form = OrderForm(request.POST) 
+        if form.is_valid(): 
+            form.save()
+        return redirect('/orders')    
+
     org = get_organization_by_request(request)
-    orgs = [org]
-    if org is None:
-        orgs = OrganizationModel.objects.all()
-    assorts = AssortmentModel.objects.all()
+    #orgs = [org]
+    #if org is None:
+    #    orgs = OrganizationModel.objects.all()
     orders = get_orders_by_request(request, org)
     template = loader.get_template('orders_all.html')
+    order_form = OrderForm()
+    assort_formset = OrderAssortFormSet()
+
 
     context = {
         'title': "Заказы для организации: "+"Все организации" if org is None else org.name,
         'context': orders,
-        'orgs': orgs,
-        'assorts': assorts
+        'order_form': order_form,
+        'assort_formset': assort_formset,
     }
     return HttpResponse(template.render(context, request))
     
 def order_item(request):
-    if request.method == 'POST':
-        form = OrderForm(request.POST)
-        if form.is_valid():
-            if form.uuid is None:
-                form.uuid = uuid.uuid4()
-            form.save()
-            return redirect('orders/')
-    else:
-        form = OrderForm()
+    # if request.method == 'POST':
+    #     form = OrderForm(request.POST)
+    #     if form.is_valid():
+    #         if form.uuid is None:
+    #             form.uuid = uuid.uuid4()
+    #         form.save()
+    #         return redirect('orders/')
+    # else:
+    #     form = OrderForm()
 
-    return render(request, 'order_item.html', {'form': form})    
+    # return render(request, 'order_item.html', {'form': form})    
+    if request.method == 'POST':
+        order_form = OrderForm(request.POST)
+        assort_formset = OrderAssortFormSet(request.POST)
+
+        if order_form.is_valid() and assort_formset.is_valid():
+            order = order_form.save()
+            assorts = assort_formset.save(commit=False)  # Получаем объекты книг, но пока не сохраняем в базе
+            for assort in assorts:
+                assort.order = order
+                assort.save()
+
+        return redirect('orders')  # Перенаправление после успешного сохранения
+    else:
+        order_form = OrderForm()
+        assort_formset = OrderAssortFormSet()
+
+        return render(request, 'order_item.html', {
+            'order_form': order_form,
+            'assort_formset': assort_formset,
+    })
     
 def order_root(request):
     return redirect('orders/') 
@@ -74,7 +102,6 @@ class OrdersListAPI(APIView):
          return Response(serializer.data)
 
     def post(self, request, format=None):
-        print(request.data)
         serializer = OrderSerializer(data=request.data)
         # if serializer.uuid == "":
         #     serializer.uuid = uuid.uuid4()
@@ -90,7 +117,6 @@ class OrdersAPI(APIView):
     def get(self, request, pk, format=None):
         order = OrderModel.objects.get(pk=pk)
         serializer = OrderSerializer(order)
-        print(f"DEBUG...")
         return Response(serializer.data)   
 
     def put(self, request, pk, format=None):

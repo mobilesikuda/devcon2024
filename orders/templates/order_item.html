@@ -1,7 +1,7 @@
 {% extends "temple.html" %}
 
 {% block content %} 
-<div class="m-3">
+<!--div class="m-3">
 <form method="post">
     {% csrf_token %}
   <div class="form-group m-3">
@@ -19,5 +19,18 @@
   <button type="submit">Записать</button>
   <button href="orders/">Отмена</button>
 </form>
-</div>
+</div -->
+<form method="post">
+    {% csrf_token %}
+    <h2>Создание заказа</h2>
+    {{ order_form.as_p }}
+
+    <h2>Ассортимент заказа</h2>
+    {{ assort_formset.management_form }}
+    {% for form in assort_formset %}
+        {{ form.as_p }}
+    {% endfor %}
+
+    <button type="submit">Сохранить</button>
+</form>
 {% endblock %}
