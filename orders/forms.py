@@ -28,13 +28,24 @@ from .models import OrderModel, OrderAssortmentTableModel
 class OrderForm(forms.ModelForm):
     class Meta:
         model = OrderModel
-        fields = ['number', 'date', 'organization']
+        fields = ['uuid','number', 'date', 'organization']
+
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}),
+            'description': forms.Textarea(attrs={'rows': 4, 'cols': 40}),
+        }
+
+        labels = {
+            'number': 'Номер документа',
+            'date': 'Дата документа',
+            'organization': 'Организация',
+        }
 
 # Inline-formset для модели Book
 OrderAssortFormSet = inlineformset_factory(
     OrderModel,  # Родительская модель
     OrderAssortmentTableModel,  # Модель, которая будет редактироваться через inline-формы
-    fields=['num','assortiment','count','price','summa'],  # Поля, доступные для изменения
+    fields=['num','assortiment','count'],  # Поля, доступные для изменения
     extra=1,  # Количество дополнительных пустых форм
     can_delete=True  # Возможность удалять связанные объекты
 )    

@@ -30,29 +30,52 @@
 </div>  
 <div class="modal" id="itemModal">
   <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" id="itemModalTitle"></h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <form method="post" action="new">
-        <div class="modal-body m-3" id="itemModalBody"></div>
+    <form method="post" action="/orders/new">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="itemModalTitle"></h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>  
+        <div class="modal-body container" id="itemModalBody">
           {% csrf_token %}
           <h2>Создание заказа</h2>
-          {{ order_form.as_p }}
+          {{ order_form.uuid.as_hidden }}
+          <div class="input-group mb-3">
+            <span class="input-group-text"> Номер </span>
+            {{ order_form.number }}
+            <span class="input-group-text"> от </span>
+            {{ order_form.date }}
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text"> Организация </span>
+            {{ order_form.organization }}
+          </div>      
           <button type="button" class="btn btn-secondary" onclick="onNewLine()">Новая строка</button>
           <h2>Ассортимент заказа</h2>
           {{ assort_formset.management_form }}
           {% for form in assort_formset %}
-              {{ form.as_p }}
+            <div class="container text-center">
+              <div class="row">
+                <div class="col">
+                  {{ form.num }} 
+                </div>
+                <div class="col">
+                  {{ form.assortiment}}
+                </div>
+                <div class="col">
+                  {{ form.count }}
+                </div>
+              </div>  
+            </div>
           {% endfor %}
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" onclick="onWriteItem()">Записать</button>
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
-          </div>
+          
         </div>
-      </form>
-    </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Записать</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </form>
   </div>
 </div>  
 <script>
@@ -72,7 +95,7 @@
       });
   }
   function onNewLine(){ 
-    const totalForms = document.querySelector('#id_assort_set-TOTAL_FORMS'); //#id_book_set-TOTAL_FORMS'
+    const totalForms = document.querySelector('#id_orderassortmenttablemodel_set-TOTAL_FORMS'); //#id_book_set-TOTAL_FORMS'
     const formIndex = totalForms.value; // Получаем индекс следующей формы
     const newForm = document.querySelector('.empty-form').cloneNode(true);
 

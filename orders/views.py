@@ -59,37 +59,26 @@ def order_list(request):
     return HttpResponse(template.render(context, request))
     
 def order_item(request):
-    # if request.method == 'POST':
-    #     form = OrderForm(request.POST)
-    #     if form.is_valid():
-    #         if form.uuid is None:
-    #             form.uuid = uuid.uuid4()
-    #         form.save()
-    #         return redirect('orders/')
-    # else:
-    #     form = OrderForm()
-
-    # return render(request, 'order_item.html', {'form': form})    
     if request.method == 'POST':
         order_form = OrderForm(request.POST)
         assort_formset = OrderAssortFormSet(request.POST)
-
+        # print(order_form.data["uuid"])
         if order_form.is_valid() and assort_formset.is_valid():
             order = order_form.save()
-            assorts = assort_formset.save(commit=False)  # Получаем объекты книг, но пока не сохраняем в базе
+            assorts = assort_formset.save(commit=False)  
             for assort in assorts:
                 assort.order = order
                 assort.save()
 
-        return redirect('orders')  # Перенаправление после успешного сохранения
-    else:
-        order_form = OrderForm()
-        assort_formset = OrderAssortFormSet()
+    return redirect('/orders')  # Перенаправление после успешного сохранения
+    # else:
+    #     order_form = OrderForm()
+    #     assort_formset = OrderAssortFormSet()
 
-        return render(request, 'order_item.html', {
-            'order_form': order_form,
-            'assort_formset': assort_formset,
-    })
+    #     return render(request, 'order_item.html', {
+    #         'order_form': order_form,
+    #         'assort_formset': assort_formset,
+    # })
     
 def order_root(request):
     return redirect('orders/') 
