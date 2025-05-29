@@ -3,7 +3,6 @@ from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from django.shortcuts import render
 from django.template import loader
 from .models import OrderModel, ManagerModel, OrganizationModel, AssortmentModel
 from .forms import OrderForm, OrderAssortFormSet

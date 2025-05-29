@@ -24,15 +24,14 @@ from .models import OrderModel, OrderAssortmentTableModel
 
 
 
-# Основная форма для модели Author
 class OrderForm(forms.ModelForm):
     class Meta:
         model = OrderModel
         fields = ['uuid','number', 'date', 'organization']
 
         widgets = {
-            'date': forms.DateInput(attrs={'type': 'date'}),
-            'description': forms.Textarea(attrs={'rows': 4, 'cols': 40}),
+            'number': forms.TextInput(attrs={'class': "form-control"}),
+            'date': forms.DateInput(attrs={'type': 'date', 'class':"form-control"}),
         }
 
         labels = {
@@ -41,11 +40,15 @@ class OrderForm(forms.ModelForm):
             'organization': 'Организация',
         }
 
-# Inline-formset для модели Book
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["organization"].widget.attrs.update({"class": "form-control"})
+
 OrderAssortFormSet = inlineformset_factory(
     OrderModel,  # Родительская модель
     OrderAssortmentTableModel,  # Модель, которая будет редактироваться через inline-формы
     fields=['num','assortiment','count'],  # Поля, доступные для изменения
     extra=1,  # Количество дополнительных пустых форм
-    can_delete=True  # Возможность удалять связанные объекты
+    can_delete=False  # Возможность удалять связанные объекты
+
 )    
