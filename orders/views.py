@@ -35,19 +35,17 @@ def order_list(request):
     if request.method == 'POST':
         print(request.POST.get("number"))
         form = OrderForm(request.POST) 
-        if form.is_valid(): 
+        formlines = OrderAssortFormSet(request.POST)
+        if form.is_valid() and formlines.is_valid(): 
             form.save()
+            formlines.save()
         return redirect('/orders')    
 
     org = get_organization_by_request(request)
-    #orgs = [org]
-    #if org is None:
-    #    orgs = OrganizationModel.objects.all()
     orders = get_orders_by_request(request, org)
     template = loader.get_template('orders_all.html')
     order_form = OrderForm()
     assort_formset = OrderAssortFormSet()
-
 
     context = {
         'title': "Заказы для организации: "+"Все организации" if org is None else org.name,

@@ -34,7 +34,7 @@
         <div class="modal-header">
           <h4 class="modal-title" id="itemModalTitle"></h4>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>  
+        </div>
         <div class="modal-body container" id="itemModalBody">
           {% csrf_token %}
           {{ order_form.uuid.as_hidden }}
@@ -48,18 +48,19 @@
             <span class="input-group-text"> Организация </span>
             {{ order_form.organization }}
           </div>
+        </div>
+        <div class="modal-body container" id="itemModalBodyLines">
           <div class="input-group mb-3">
             <button type="button" class="btn btn-secondary" onclick="onNewLine()">Новая строка</button>
           </div>
           {{ assort_formset.management_form }}
           {% for form in assort_formset %}
-            <div class="input-group mb-3">
-              {{ form.number }}
+            <div class="input-group mb-3" id="Line">
+              {{ form.num }}
               {{ form.assortiment }}
               {{ form.count }}
             </div>
           {% endfor %}
-          
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Записать</button>
@@ -69,8 +70,7 @@
     </form>
   </div>
 </div>  
-<script>
-  
+<script>  
   function onNewItem(){ 
     document.getElementById("itemModalTitle").innerHTML = "Новый заказ"  
   }
@@ -86,13 +86,9 @@
       });
   }
   function onNewLine(){ 
-    const totalForms = document.querySelector('#id_orderassortmenttablemodel_set-TOTAL_FORMS'); //#id_book_set-TOTAL_FORMS'
-    const formIndex = totalForms.value; // Получаем индекс следующей формы
-    const newForm = document.querySelector('.empty-form').cloneNode(true);
-
-    newForm.innerHTML = newForm.innerHTML.replace(/__prefix__/g, formIndex);
-    formsetContainer.appendChild(newForm);
-
+    const totalForms = document.getElementById("itemModalBodyLines");
+    const clonedLine   = totalForms.lastElementChild.cloneNode(true);
+    totalForms.appendChild(clonedLine);
     totalForms.value = parseInt(totalForms.value) + 1;
   }
 </script>
