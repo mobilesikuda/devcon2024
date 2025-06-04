@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework import status
@@ -60,12 +60,7 @@ def order_list(request):
 def order_create(request):
     
     if request.method == 'POST':
-        uuid_data = uuid.UUID(request.POST["uuid"])
-        order =  OrderModel.objects.get(uuid=uuid_data).first()
-        if order is None:
-            order_form = OrderForm(request.POST)
-        else:
-            order_form = OrderForm(request.POST, instance=order)
+        order_form = OrderForm(request.POST)
         assort_formset = OrderAssortFormSet(request.POST)
         print("Save data:")
         print(order_form.data["uuid"])
@@ -78,22 +73,24 @@ def order_create(request):
 
     return redirect('/orders')  # Перенаправление после успешного сохранения
 
-def order_save(request, pk=None):
+def order_save(request, pk):
+    print("Save")
     order = get_object_or_404(OrderModel, pk=pk)
+    print(pk)
     if request.method == 'POST':
-        if order is None:
-            order_form = OrderForm(request.POST)
-        else:
-            order_form = OrderForm(request.POST, instance=order)
-        print(order_form.data["uuid"])    
+        order_form = OrderForm(request.POST, instance=order)
         assort_formset = OrderAssortFormSet(request.POST)
-        # print(order_form.data["uuid"])
         if order_form.is_valid() and assort_formset.is_valid():
             order = order_form.save()
+            print("save order")
             assorts = assort_formset.save(commit=False)  
             for assort in assorts:
                 assort.order = order
                 assort.save()
+        return redirect('/orders')        
+    else:
+        order_form = OrderForm(instance=order)
+        return render(request, 'order_item.html', {'order_form': order_form})             
     
 def order_root(request):
     return redirect('orders/') 

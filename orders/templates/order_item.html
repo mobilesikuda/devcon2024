@@ -23,7 +23,18 @@
 <form method="post">
     {% csrf_token %}
     <h2>Создание заказа</h2>
-    {{ order_form.as_p }}
+    {{ order_form.uuid.as_hidden }}
+    <div class="input-group mb-3">
+      <span class="input-group-text"> Номер </span>
+      {{ order_form.number }}
+      <span class="input-group-text"> от </span>
+      {{ order_form.date }}
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text"> Организация </span>
+      {{ order_form.organization }}
+    </div>
+    <!-- {{ order_form.as_p }} -->
 
     <h2>Ассортимент заказа</h2>
     {{ assort_formset.management_form }}

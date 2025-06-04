@@ -29,7 +29,7 @@
 </div>
 <div class="modal" id="itemModal">
   <div class="modal-dialog modal-lg">
-    <form method="post" action="/orders/new">
+    <form method="post" action="/orders/new/" id="itemModalForm">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title" id="itemModalTitle"></h4>
@@ -75,6 +75,8 @@
     document.getElementById("itemModalTitle").innerHTML = "Новый заказ"  
   }
   async function onViewItem(id=""){ 
+
+    document.getElementById("itemModalForm").action = "/orders/"+id+"/";
     document.getElementById("itemModalTitle").innerHTML = "Редактирование заказа"
     var itemModelTable  = document.getElementById("itemModelTable") 
     fetch('/orders-api/'+id)
