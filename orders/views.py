@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework import status
@@ -7,6 +7,8 @@ from django.template import loader
 from .models import OrderModel, ManagerModel, OrganizationModel, AssortmentModel
 from .forms import OrderForm, OrderAssortFormSet
 from .serializers import OrderSerializer
+import uuid
+
 
 def get_organization_by_request(request):
     org = None
@@ -55,11 +57,18 @@ def order_list(request):
     }
     return HttpResponse(template.render(context, request))
     
-def order_item(request):
+def order_create(request):
+    
     if request.method == 'POST':
-        order_form = OrderForm(request.POST)
+        uuid_data = uuid.UUID(request.POST["uuid"])
+        order =  OrderModel.objects.get(uuid=uuid_data).first()
+        if order is None:
+            order_form = OrderForm(request.POST)
+        else:
+            order_form = OrderForm(request.POST, instance=order)
         assort_formset = OrderAssortFormSet(request.POST)
-        # print(order_form.data["uuid"])
+        print("Save data:")
+        print(order_form.data["uuid"])
         if order_form.is_valid() and assort_formset.is_valid():
             order = order_form.save()
             assorts = assort_formset.save(commit=False)  
@@ -68,14 +77,23 @@ def order_item(request):
                 assort.save()
 
     return redirect('/orders')  # Перенаправление после успешного сохранения
-    # else:
-    #     order_form = OrderForm()
-    #     assort_formset = OrderAssortFormSet()
 
-    #     return render(request, 'order_item.html', {
-    #         'order_form': order_form,
-    #         'assort_formset': assort_formset,
-    # })
+def order_save(request, pk=None):
+    order = get_object_or_404(OrderModel, pk=pk)
+    if request.method == 'POST':
+        if order is None:
+            order_form = OrderForm(request.POST)
+        else:
+            order_form = OrderForm(request.POST, instance=order)
+        print(order_form.data["uuid"])    
+        assort_formset = OrderAssortFormSet(request.POST)
+        # print(order_form.data["uuid"])
+        if order_form.is_valid() and assort_formset.is_valid():
+            order = order_form.save()
+            assorts = assort_formset.save(commit=False)  
+            for assort in assorts:
+                assort.order = order
+                assort.save()
     
 def order_root(request):
     return redirect('orders/') 
