@@ -75,9 +75,15 @@ def order_save(request, pk):
     else:
         if pk == "new":
             order_form = OrderForm()
+            assort_formset = OrderAssortFormSet()
         else:    
             order_form = OrderForm(instance=order)
-        return render(request, 'order_item.html', {'order_form': order_form})             
+            assort_formset = OrderAssortFormSet(instance=order)
+        return render(request, 'order_all_item.html', 
+                      {
+                          'order_form': order_form,
+                          'assort_formset': assort_formset
+                      })             
     
 def order_root(request):
     return redirect('orders/') 

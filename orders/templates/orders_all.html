@@ -36,31 +36,6 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body container" id="itemModalBody">
-          {% csrf_token %}
-          {{ order_form.uuid.as_hidden }}
-          <div class="input-group mb-3">
-            <span class="input-group-text"> Номер </span>
-            {{ order_form.number }}
-            <span class="input-group-text"> от </span>
-            {{ order_form.date }}
-          </div>
-          <div class="input-group mb-3">
-            <span class="input-group-text"> Организация </span>
-            {{ order_form.organization }}
-          </div>
-        </div>
-        <div class="modal-body container" id="itemModalBodyLines">
-          <div class="input-group mb-3">
-            <button type="button" class="btn btn-secondary" onclick="onNewLine()">Новая строка</button>
-          </div>
-          {{ assort_formset.management_form }}
-          {% for form in assort_formset %}
-            <div class="input-group mb-3" id="Line">
-              {{ form.num }}
-              {{ form.assortiment }}
-              {{ form.count }}
-            </div>
-          {% endfor %}
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Записать</button>
@@ -74,18 +49,20 @@
   function onNewItem(){ 
     document.getElementById("itemModalTitle").innerHTML = "Новый заказ";
     document.getElementById("itemModalForm").action = "/orders/new/";
+    fetch('/orders/new')
+      .then(response => response.text())
+      .then(text => {
+        document.getElementById("itemModalBody").innerHTML = text;
+      });
   }
+  
   async function onViewItem(id=""){ 
-
     document.getElementById("itemModalForm").action = "/orders/"+id+"/";
     document.getElementById("itemModalTitle").innerHTML = "Редактирование заказа"
-    var itemModelTable  = document.getElementById("itemModelTable") 
-    fetch('/orders-api/'+id)
-      .then(response => response.json())
-      .then(commits => {
-        document.getElementById("id_organization").value = commits.organization
-        number: document.getElementById("id_number").value = commits.number
-        document.getElementById("id_date").value = commits.date
+    fetch('/orders/'+id)
+      .then(response => response.text())
+      .then(text => {
+        document.getElementById("itemModalBody").innerHTML = text;
       });
   }
   function onNewLine(){ 
