@@ -22,7 +22,6 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('', views.order_root),
     path('orders/', views.order_list, name='orders'),
-    path('orders/new', views.order_create, name='orders'),
     path('orders/<pk>/', views.order_save, name='orders'),
     
     path('login/', auth_views.LoginView.as_view(), name='login'),

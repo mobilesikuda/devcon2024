@@ -17,7 +17,7 @@ class AssortmentModel(models.Model):
         return f"{self.name}"
 
 class ManagerModel(models.Model):
-    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    uuid = models.UUIDField(primary_key=True, null=False)
     organization = models.ForeignKey(OrganizationModel, on_delete = models.CASCADE)
     name = models.CharField(max_length=255)
     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)

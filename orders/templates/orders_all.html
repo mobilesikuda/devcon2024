@@ -72,7 +72,8 @@
 </div>  
 <script>  
   function onNewItem(){ 
-    document.getElementById("itemModalTitle").innerHTML = "Новый заказ"  
+    document.getElementById("itemModalTitle").innerHTML = "Новый заказ";
+    document.getElementById("itemModalForm").action = "/orders/new/";
   }
   async function onViewItem(id=""){ 
 

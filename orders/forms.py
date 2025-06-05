@@ -5,7 +5,7 @@ from .models import OrderModel, OrderAssortmentTableModel
 class OrderForm(forms.ModelForm):
     class Meta:
         model = OrderModel
-        fields = ['uuid','number', 'date', 'organization']
+        fields = ['number', 'date', 'organization'] #'uuid'
 
         widgets = {
             'number': forms.TextInput(attrs={'class': "form-control"}),

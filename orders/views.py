@@ -1,13 +1,12 @@
-from django.shortcuts import redirect, get_object_or_404, render
+from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from django.template import loader
-from .models import OrderModel, ManagerModel, OrganizationModel, AssortmentModel
+from .models import OrderModel, ManagerModel
 from .forms import OrderForm, OrderAssortFormSet
 from .serializers import OrderSerializer
-import uuid
 
 
 def get_organization_by_request(request):
@@ -57,39 +56,27 @@ def order_list(request):
     }
     return HttpResponse(template.render(context, request))
     
-def order_create(request):
-    
-    if request.method == 'POST':
-        order_form = OrderForm(request.POST)
-        assort_formset = OrderAssortFormSet(request.POST)
-        print("Save data:")
-        print(order_form.data["uuid"])
-        if order_form.is_valid() and assort_formset.is_valid():
-            order = order_form.save()
-            assorts = assort_formset.save(commit=False)  
-            for assort in assorts:
-                assort.order = order
-                assort.save()
-
-    return redirect('/orders')  # Перенаправление после успешного сохранения
-
 def order_save(request, pk):
-    print("Save")
-    order = get_object_or_404(OrderModel, pk=pk)
-    print(pk)
+    if pk != "new":
+        order = OrderModel.objects.get(pk=pk)
     if request.method == 'POST':
-        order_form = OrderForm(request.POST, instance=order)
+        if pk == "new":
+            order_form = OrderForm(request.POST)
+        else:
+            order_form = OrderForm(request.POST, instance=order)     
         assort_formset = OrderAssortFormSet(request.POST)
         if order_form.is_valid() and assort_formset.is_valid():
             order = order_form.save()
-            print("save order")
             assorts = assort_formset.save(commit=False)  
             for assort in assorts:
                 assort.order = order
                 assort.save()
         return redirect('/orders')        
     else:
-        order_form = OrderForm(instance=order)
+        if pk == "new":
+            order_form = OrderForm()
+        else:    
+            order_form = OrderForm(instance=order)
         return render(request, 'order_item.html', {'order_form': order_form})             
     
 def order_root(request):
