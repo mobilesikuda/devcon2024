@@ -59,6 +59,9 @@ def order_list(request):
 def order_save(request, pk):
     if pk != "new":
         order = OrderModel.objects.get(pk=pk)
+        if request.method == 'DELETE':
+            order.delete()
+            return redirect('/orders')
     if request.method == 'POST':
         if pk == "new":
             order_form = OrderForm(request.POST)
@@ -84,7 +87,7 @@ def order_save(request, pk):
                           'order_form': order_form,
                           'assort_formset': assort_formset
                       })             
-    
+
 def order_root(request):
     return redirect('orders/') 
 

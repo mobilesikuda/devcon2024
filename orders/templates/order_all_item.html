@@ -15,11 +15,14 @@
 <div class="input-group mb-3">
     <button type="button" class="btn btn-secondary" onclick="onNewLine()">Новая строка</button>
 </div>
+<div class="hr"/>
 {{ assort_formset.management_form }}
 {% for form in assort_formset %}
     <div class="input-group mb-3">
-    {{ form.num }}
     {{ form.assortiment }}
     {{ form.count }}
+    {{ form.price }}
+    {{ form.summa }}
+    <button type="button" class="btn btn-danger" onclick="onDeleteLine(this)">Удалить</button>
     </div>
 {% endfor %}

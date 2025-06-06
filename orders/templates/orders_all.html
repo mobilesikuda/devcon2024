@@ -38,15 +38,27 @@
         <div class="modal-body container" id="itemModalBody">
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Записать</button>
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
+          <div class="hstack gap-3">
+            <div class="p-2">
+              <button type="button" class="btn btn-danger" hidden data-bs-dismiss="modal" onclick="onDeleteItem()">Delete</button>
+            </div>
+            <div class="vr"></div>
+            <div class="p-2">
+              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Записать</button>
+            </div>
+            <div class="vr"></div>
+            <div class="p-2">  
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>  
+            </div>
+          </div> 
         </div>
       </div>
     </form>
   </div>
 </div>  
 <script>  
-  function onNewItem(){ 
+  async function onNewItem(){ 
     document.getElementById("itemModalTitle").innerHTML = "Новый заказ";
     document.getElementById("itemModalForm").action = "/orders/new/";
     fetch('/orders/new')
@@ -70,6 +82,47 @@
     const clonedLine   = totalForms.lastElementChild.cloneNode(true);
     totalForms.appendChild(clonedLine);
     totalForms.value = parseInt(totalForms.value) + 1;
+  }
+  function onDeleteLine(curDelete){
+    const totalForms = document.getElementById("itemModalBodyLines"); 
+    const currentLine   = curDelete.parentNode; //.lastElementChild;
+    if( totalForms.children.length > 6){
+      totalForms.removeChild(currentLine);
+      totalForms.value = parseInt(totalForms.value) - 1; 
+    }  
+    
+  }
+  function onChange(element){
+    const totalForms = document.getElementById("itemModalBodyLines");
+    const elemArray = element.id.split("-");
+    const elemCount = document.getElementById(elemArray[0]+"-"+elemArray[1]+"-count");
+    const elemPrice = document.getElementById(elemArray[0]+"-"+elemArray[1]+"-price");
+    const elemSumma = document.getElementById(elemArray[0]+"-"+elemArray[1]+"-summa");
+    const nameField = elemArray[elemArray.length-1];
+    switch(nameField){
+      case "count": 
+      case "price": 
+        elemSumma.value = elemCount.value*elemPrice.value;
+        break;
+      case "summa": 
+         if(elemCount.value != 0){
+            elemPrice.value = elemSumma.value/elemCount.value;
+         }
+        break;
+    } 
+
+  }
+
+  function onDeleteItem(){
+    fetch(document.getElementById("itemModalForm").action+"/del/");
+    // fetch( document.getElementById("itemModalForm").action, 
+    //  { 
+    //    method: "DELETE"
+    //  })
+    //  .then(response => response.text())
+    //  .then(text => {
+    //     alert(text);
+    //  });
   }
 </script>
 {% endblock %}
