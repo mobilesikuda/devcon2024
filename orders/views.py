@@ -65,12 +65,14 @@ def order_save(request, pk):
     if request.method == 'POST':
         if pk == "new":
             order_form = OrderForm(request.POST)
+            assort_formset = OrderAssortFormSet(request.POST)
         else:
             order_form = OrderForm(request.POST, instance=order)     
-        assort_formset = OrderAssortFormSet(request.POST)
+            assort_formset = OrderAssortFormSet(request.POST, instance=order)
         if order_form.is_valid() and assort_formset.is_valid():
             order = order_form.save()
-            assorts = assort_formset.save(commit=False)  
+            assorts = assort_formset.save(commit=False) 
+            print("valid") 
             for assort in assorts:
                 assort.order = order
                 assort.save()

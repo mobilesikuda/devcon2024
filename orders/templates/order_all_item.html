@@ -18,6 +18,9 @@
 <div class="hr"/>
 {{ assort_formset.management_form }}
 {% for form in assort_formset %}
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
     <div class="input-group mb-3">
     {{ form.assortiment }}
     {{ form.count }}

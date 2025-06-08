@@ -25,11 +25,11 @@ class OrderForm(forms.ModelForm):
 OrderAssortFormSet = inlineformset_factory(
     OrderModel,  # Родительская модель
     OrderAssortmentTableModel,  # Модель, которая будет редактироваться через inline-формы
-    fields=['num','assortiment','count', 'price', 'summa'],  # Поля, доступные для изменения
+    fields=['assortiment','count', 'price', 'summa'],  # Поля, доступные для изменения
     extra=1,  # Количество дополнительных пустых форм
     can_delete=True, # Возможность удалять связанные объекты
     widgets={
-        'num': forms.TextInput(attrs={'class': "form-control"}),
+        #'num': forms.TextInput(attrs={'class': "form-control"}),
         'assortiment': forms.Select(attrs={'class': "form-control"}),
         'count': forms.TextInput(attrs={'class': "form-control", 'onchange': 'onChange(this)'}),
         'price': forms.TextInput(attrs={'class': "form-control", 'onchange': 'onChange(this)'}),
