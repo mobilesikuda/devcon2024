@@ -19,8 +19,20 @@ class OrderForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        org = None
+        if 'org' in kwargs:
+            org = kwargs.pop('org')
+        super().__init__(*args, **kwargs)    
         self.fields["organization"].widget.attrs.update({"class": "form-control"})
+        if org is not None:    
+            self.fields["organization"].widget.attrs.update({"disabled": None, "value": org.uuid})
+            #qs = self.fields['organization'].choices.queryset
+            #qs = qs[:1]
+            #self.fields['organization'].choices.queryset = qs
+            #self.fields["organization"].widget.choices.pop(org)
+            #self.fields["organization"] = forms.ChoiceField(choices=( (org.uuid, org.name)), 
+            #                       widget=forms.Select(attrs={'disabled':'disabled'})) 
+     
 
 OrderAssortFormSet = inlineformset_factory(
     OrderModel,  # Родительская модель

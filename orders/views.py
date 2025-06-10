@@ -45,18 +45,19 @@ def order_list(request):
     org = get_organization_by_request(request)
     orders = get_orders_by_request(request, org)
     template = loader.get_template('orders_all.html')
-    order_form = OrderForm()
-    assort_formset = OrderAssortFormSet()
+    #order_form = OrderForm()
+    #assort_formset = OrderAssortFormSet()
 
     context = {
         'title': "Заказы для организации: "+"Все организации" if org is None else org.name,
         'context': orders,
-        'order_form': order_form,
-        'assort_formset': assort_formset,
+        #'order_form': order_form,
+        #'assort_formset': assort_formset,
     }
     return HttpResponse(template.render(context, request))
     
 def order_save(request, pk):
+    org = get_organization_by_request(request)
     if pk != "new":
         order = OrderModel.objects.get(pk=pk)
         if request.method == 'DELETE':
@@ -79,10 +80,10 @@ def order_save(request, pk):
         return redirect('/orders')        
     else:
         if pk == "new":
-            order_form = OrderForm()
+            order_form = OrderForm(org=org)
             assort_formset = OrderAssortFormSet()
         else:    
-            order_form = OrderForm(instance=order)
+            order_form = OrderForm(instance=order, org=org)
             assort_formset = OrderAssortFormSet(instance=order)
         return render(request, 'order_all_item.html', 
                       {
