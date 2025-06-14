@@ -25,7 +25,8 @@ class OrderForm(forms.ModelForm):
         super().__init__(*args, **kwargs)    
         self.fields["organization"].widget.attrs.update({"class": "form-control"})
         if org is not None:    
-            self.fields["organization"].widget.attrs.update({"disabled": None, "value": org.uuid})
+            self.fields["organization"].widget.attrs.update({"disabled":None});
+            self.fields["organization"].widget.choices = [(org.uuid, org.name)];
             #qs = self.fields['organization'].choices.queryset
             #qs = qs[:1]
             #self.fields['organization'].choices.queryset = qs

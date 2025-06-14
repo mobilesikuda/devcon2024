@@ -29,7 +29,7 @@
 </div>
 <div class="modal" id="itemModal">
   <div class="modal-dialog modal-lg">
-    <form method="post" action="/orders/new/" id="itemModalForm">
+    <form method="post" action="" id="itemModalForm">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title" id="itemModalTitle"></h4>
@@ -40,7 +40,7 @@
         <div class="modal-footer">
           <div class="hstack gap-3">
             <div class="p-2">
-              <button type="button" class="btn btn-danger" hidden data-bs-dismiss="modal" onclick="onDeleteItem()">Delete</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="onDeleteItem()">Delete</button>
             </div>
             <div class="vr"></div>
             <div class="p-2">
@@ -67,32 +67,30 @@
         document.getElementById("itemModalBody").innerHTML = text;
       });
   }
-  
   async function onViewItem(id=""){ 
-    document.getElementById("itemModalForm").action = "/orders/"+id+"/";
+    document.getElementById("itemModalForm").action = "/orders/edit/"+id+"/";
     document.getElementById("itemModalTitle").innerHTML = "Редактирование заказа"
-    fetch('/orders/'+id)
+    fetch('/orders/edit/'+id)
       .then(response => response.text())
       .then(text => {
         document.getElementById("itemModalBody").innerHTML = text;
       });
   }
-  function onNewLine(){ 
+  async function onNewLine(){ 
     const totalForms = document.getElementById("itemModalBodyLines");
     const clonedLine   = totalForms.lastElementChild.cloneNode(true);
     totalForms.appendChild(clonedLine);
     totalForms.value = parseInt(totalForms.value) + 1;
   }
-  function onDeleteLine(curDelete){
+  async function onDeleteLine(curDelete){
     const totalForms = document.getElementById("itemModalBodyLines"); 
     const currentLine   = curDelete.parentNode; //.lastElementChild;
     if( totalForms.children.length > 6){
       totalForms.removeChild(currentLine);
       totalForms.value = parseInt(totalForms.value) - 1; 
-    }  
-    
+    }    
   }
-  function onChange(element){
+  async function onChange(element){
     const totalForms = document.getElementById("itemModalBodyLines");
     const elemArray = element.id.split("-");
     const elemCount = document.getElementById(elemArray[0]+"-"+elemArray[1]+"-count");
@@ -112,17 +110,10 @@
     } 
 
   }
-
   function onDeleteItem(){
-    fetch(document.getElementById("itemModalForm").action+"/del/");
-    // fetch( document.getElementById("itemModalForm").action, 
-    //  { 
-    //    method: "DELETE"
-    //  })
-    //  .then(response => response.text())
-    //  .then(text => {
-    //     alert(text);
-    //  });
+    const form = document.getElementById("itemModalForm");
+    form.action = form.action.replace("edit","del");
+    form.submit();
   }
 </script>
 {% endblock %}

@@ -55,41 +55,60 @@ def order_list(request):
         #'assort_formset': assort_formset,
     }
     return HttpResponse(template.render(context, request))
-    
-def order_save(request, pk):
+
+def order_new(request):
     org = get_organization_by_request(request)
-    if pk != "new":
-        order = OrderModel.objects.get(pk=pk)
-        if request.method == 'DELETE':
-            order.delete()
-            return redirect('/orders')
     if request.method == 'POST':
-        if pk == "new":
-            order_form = OrderForm(request.POST)
-            assort_formset = OrderAssortFormSet(request.POST)
-        else:
-            order_form = OrderForm(request.POST, instance=order)     
-            assort_formset = OrderAssortFormSet(request.POST, instance=order)
+        order_form = OrderForm(request.POST)
+        assort_formset = OrderAssortFormSet(request.POST)
         if order_form.is_valid() and assort_formset.is_valid():
-            order = order_form.save()
+            order = order_form.save(commit=False)
+            if org is not None:
+                order.organization = org
+            order.save()
             assorts = assort_formset.save(commit=False) 
-            print("valid") 
             for assort in assorts:
                 assort.order = order
                 assort.save()
         return redirect('/orders')        
     else:
-        if pk == "new":
-            order_form = OrderForm(org=org)
-            assort_formset = OrderAssortFormSet()
-        else:    
-            order_form = OrderForm(instance=order, org=org)
-            assort_formset = OrderAssortFormSet(instance=order)
+        order_form = OrderForm(org=org)
+        assort_formset = OrderAssortFormSet()
         return render(request, 'order_all_item.html', 
                       {
                           'order_form': order_form,
                           'assort_formset': assort_formset
                       })             
+
+
+def order_save(request, pk):
+    org = get_organization_by_request(request)
+    order = OrderModel.objects.get(pk=pk)
+    if request.method == 'POST':
+        order_form = OrderForm(request.POST, instance=order)     
+        assort_formset = OrderAssortFormSet(request.POST, instance=order)
+        if order_form.is_valid() and assort_formset.is_valid():
+            order = order_form.save()
+            assorts = assort_formset.save(commit=False) 
+            for assort in assorts:
+                assort.order = order
+                assort.save()
+        return redirect('/orders')        
+    else:    
+        order_form = OrderForm(instance=order, org=org)
+        assort_formset = OrderAssortFormSet(instance=order)
+        return render(request, 'order_all_item.html', 
+                      {
+                          'order_form': order_form,
+                          'assort_formset': assort_formset
+                      })             
+
+def order_del(request, pk):   
+    if request.method == 'POST':
+        order = OrderModel.objects.get(pk=pk)
+        if order is not None:
+            order.delete()
+        return redirect('/orders')           
 
 def order_root(request):
     return redirect('orders/') 

@@ -22,14 +22,16 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('', views.order_root),
     path('orders/', views.order_list, name='orders'),
-    path('orders/<pk>/', views.order_save, name='orders'),
+    path('orders/new/', views.order_new, name='orders'),
+    path('orders/edit/<pk>/', views.order_save, name='orders'),
+    path('orders/del/<pk>/', views.order_del, name='orders'),
     
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('accounts/profile/', views.order_root),
     path('accounts/profile/orders', views.order_root),
-    path('orders-api/', views.OrdersListAPI.as_view(), name='article-api'),
-    path('orders-api/<pk>/', views.OrdersAPI.as_view(), name='article-api'),
+    #path('orders-api/', views.OrdersListAPI.as_view(), name='article-api'),
+    #path('orders-api/<pk>/', views.OrdersAPI.as_view(), name='article-api'),
 
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    #path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     #path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),   
 ]
