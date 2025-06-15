@@ -1,6 +1,11 @@
 from django.forms import modelformset_factory, inlineformset_factory
 from django import forms
 from .models import OrderModel, OrderAssortmentTableModel
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(label='Имя пользователя')
+    password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
 
 class OrderForm(forms.ModelForm):
     class Meta:
@@ -27,13 +32,6 @@ class OrderForm(forms.ModelForm):
         if org is not None:    
             self.fields["organization"].widget.attrs.update({"disabled":None});
             self.fields["organization"].widget.choices = [(org.uuid, org.name)];
-            #qs = self.fields['organization'].choices.queryset
-            #qs = qs[:1]
-            #self.fields['organization'].choices.queryset = qs
-            #self.fields["organization"].widget.choices.pop(org)
-            #self.fields["organization"] = forms.ChoiceField(choices=( (org.uuid, org.name)), 
-            #                       widget=forms.Select(attrs={'disabled':'disabled'})) 
-     
 
 OrderAssortFormSet = inlineformset_factory(
     OrderModel,  # Родительская модель

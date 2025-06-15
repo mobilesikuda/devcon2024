@@ -26,9 +26,9 @@ urlpatterns = [
     path('orders/edit/<pk>/', views.order_save, name='orders'),
     path('orders/del/<pk>/', views.order_del, name='orders'),
     
-    path('login/', auth_views.LoginView.as_view(), name='login'),
-    path('accounts/profile/', views.order_root),
-    path('accounts/profile/orders', views.order_root),
+    path('login/', views.login_view, name='login'),
+    #path('accounts/profile/', views.order_root),
+    #path('accounts/profile/orders', views.order_root),
     #path('orders-api/', views.OrdersListAPI.as_view(), name='article-api'),
     #path('orders-api/<pk>/', views.OrdersAPI.as_view(), name='article-api'),
 

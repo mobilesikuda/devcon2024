@@ -7,7 +7,20 @@ from django.template import loader
 from .models import OrderModel, ManagerModel
 from .forms import OrderForm, OrderAssortFormSet
 from .serializers import OrderSerializer
+from django.contrib.auth import login, authenticate
+from .forms import LoginForm
 
+def login_view(request):
+    form = LoginForm(data=request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)     
+                return redirect('/orders')  
+    return render(request, 'login.html', {'form': form})
 
 def get_organization_by_request(request):
     org = None
@@ -34,25 +47,15 @@ def order_list(request):
         return redirect('login')
     
     if request.method == 'POST':
-        print(request.POST.get("number"))
-        form = OrderForm(request.POST) 
-        formlines = OrderAssortFormSet(request.POST)
-        if form.is_valid() and formlines.is_valid(): 
-            form.save()
-            formlines.save()
-        return redirect('/orders')    
+        return redirect('/orders/new')    
 
     org = get_organization_by_request(request)
     orders = get_orders_by_request(request, org)
     template = loader.get_template('orders_all.html')
-    #order_form = OrderForm()
-    #assort_formset = OrderAssortFormSet()
-
+    
     context = {
         'title': "Заказы для организации: "+"Все организации" if org is None else org.name,
         'context': orders,
-        #'order_form': order_form,
-        #'assort_formset': assort_formset,
     }
     return HttpResponse(template.render(context, request))
 
@@ -88,7 +91,12 @@ def order_save(request, pk):
         order_form = OrderForm(request.POST, instance=order)     
         assort_formset = OrderAssortFormSet(request.POST, instance=order)
         if order_form.is_valid() and assort_formset.is_valid():
-            order = order_form.save()
+            if org is None:
+                order = order_form.save()
+            else: 
+                order = order_form.save(commit=False)
+                order.organization = org
+                order.save()    
             assorts = assort_formset.save(commit=False) 
             for assort in assorts:
                 assort.order = order
