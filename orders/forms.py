@@ -10,7 +10,7 @@ class LoginForm(AuthenticationForm):
 class OrderForm(forms.ModelForm):
     class Meta:
         model = OrderModel
-        fields = ['number', 'date', 'organization'] #'uuid'
+        fields = ['number', 'date', 'organization','comment'] 
 
         widgets = {
             'number': forms.TextInput(attrs={'class': "form-control"}),
@@ -21,6 +21,7 @@ class OrderForm(forms.ModelForm):
             'number': 'Номер документа',
             'date': 'Дата документа',
             'organization': 'Организация',
+            'comment': 'Коментарий',
         }
 
     def __init__(self, *args, **kwargs):
@@ -28,7 +29,10 @@ class OrderForm(forms.ModelForm):
         if 'org' in kwargs:
             org = kwargs.pop('org')
         super().__init__(*args, **kwargs)    
-        self.fields["organization"].widget.attrs.update({"class": "form-control"})
+        self.fields["organization"].widget.attrs.update({"class": "form-select"})
+        self.fields["number"].widget.attrs.update({"class": "text-start"})
+        self.fields["date"].widget.attrs.update({"class": "text-end"})
+        self.fields["comment"].widget.attrs.update({"class": "w-100"})
         if org is not None:    
             self.fields["organization"].widget.attrs.update({"disabled":None});
             self.fields["organization"].widget.choices = [(org.uuid, org.name)];
@@ -40,10 +44,9 @@ OrderAssortFormSet = inlineformset_factory(
     extra=1,  # Количество дополнительных пустых форм
     can_delete=True, # Возможность удалять связанные объекты
     widgets={
-        #'num': forms.TextInput(attrs={'class': "form-control"}),
-        'assortiment': forms.Select(attrs={'class': "form-control"}),
-        'count': forms.TextInput(attrs={'class': "form-control", 'onchange': 'onChange(this)'}),
-        'price': forms.TextInput(attrs={'class': "form-control", 'onchange': 'onChange(this)'}),
-        'summa': forms.TextInput(attrs={'class': "form-control", 'onchange': 'onChange(this)'}),
+        'assortiment': forms.Select(attrs={'class': "form-select"}),
+        'count': forms.TextInput(attrs={'class': "form-control text-end", 'onchange': 'onChange(this)'}),
+        'price': forms.TextInput(attrs={'class': "form-control text-end", 'onchange': 'onChange(this)'}),
+        'summa': forms.TextInput(attrs={'class': "form-control text-end", 'onchange': 'onChange(this)'}),
         }
 )    

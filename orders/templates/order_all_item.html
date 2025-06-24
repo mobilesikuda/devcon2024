@@ -10,6 +10,10 @@
     <span class="input-group-text"> Организация </span>
     {{ order_form.organization }}
 </div>
+<div class="input-group mb-3">
+    <span class="input-group-text"> Комментарий </span>
+    {{ order_form.comment }}
+</div>
 <div class="modal-body container" id="itemModalBodyLines">
 <div class="input-group mb-3">
     <button type="button" class="btn btn-secondary" onclick="onNewLine()">Новая строка</button>
@@ -20,11 +24,21 @@
         {{ hidden }}
     {% endfor %}
     <div class="input-group mb-1">
+    <div class="col-6">    
     {{ form.assortiment }}
+    </div>
+    <div class="col-1">
     {{ form.count }}
+    </div>
+    <div class="col-2">
     {{ form.price }}
+    </div>
+    <div class="col-2">
     {{ form.summa }}
-    <button type="button" class="btn btn-danger" onclick="onDeleteLine(this)">Удалить</button>
+    </div>
+    <div class="col-1">
+    <button type="button" class="btn btn-outline-secondary" onclick="onDeleteLine(this)">Удалить</button>
+    </div>
     </div>
 {% endfor %}
 </div>

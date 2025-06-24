@@ -12,23 +12,25 @@
           <th>Номен заказа</th>
           <th>Дата заказа</th>
           <th>Организация</th>
+          <th>Комментарий</th>
           <th class='d-print-none'>Действие</th>
         </tr>
       </thead>
       <tbody class="table-group-divider">
         {% for x in context %}
           <tr>
-              <td>{{ x.number }}</td>
-              <td>{{ x.date }}</td>
+              <td class="col-2">{{ x.number }}</td>
+              <td class="col-2">{{ x.date }}</td>
               <td>{{ x.organization.name }}</td>
-              <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#itemModal" onclick="onViewItem('{{x.pk}}')">Редактор</button></td>
+              <td>{{ x.comment }}</td>
+              <td class="col-2"><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#itemModal" onclick="onViewItem('{{x.pk}}')">Редактор</button></td>
           </tr>
         {% endfor %}
       </tbody>
   </table>
 </div>
 <div class="modal" id="itemModal">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-xl modal-fullscreen-xl-down">
     <form method="post" action="" id="itemModalForm">
       <div class="modal-content">
         <div class="modal-header">
