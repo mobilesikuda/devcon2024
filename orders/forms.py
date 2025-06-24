@@ -32,7 +32,7 @@ class OrderForm(forms.ModelForm):
         self.fields["organization"].widget.attrs.update({"class": "form-select"})
         self.fields["number"].widget.attrs.update({"class": "text-start"})
         self.fields["date"].widget.attrs.update({"class": "text-end"})
-        self.fields["comment"].widget.attrs.update({"class": "w-100"})
+        self.fields["comment"].widget.attrs.update({"class": "w-100", "rows":"2"})
         if org is not None:    
             self.fields["organization"].widget.attrs.update({"disabled":None});
             self.fields["organization"].widget.choices = [(org.uuid, org.name)];

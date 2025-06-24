@@ -86,7 +86,7 @@
   }
   async function onDeleteLine(curDelete){
     const totalForms = document.getElementById("itemModalBodyLines"); 
-    const currentLine   = curDelete.parentNode; //.lastElementChild;
+    const currentLine   = curDelete.parentNode.parentNode; //.lastElementChild;
     if( totalForms.children.length > 6){
       totalForms.removeChild(currentLine);
       totalForms.value = parseInt(totalForms.value) - 1; 
