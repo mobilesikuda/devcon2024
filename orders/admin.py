@@ -15,7 +15,7 @@ class OrderAssortmentlInline(admin.TabularInline):
     extra = 1
 
 class OrderModelAdmin(admin.ModelAdmin):
-  list_display = ("number", "date","organization")
+  list_display = ("number", "date","organization","summa")
   list_filter = ('date', 'number','organization')
   search_fields = ('number', 'date', 'organization__name') 
   ordering = ('date',)

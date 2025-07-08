@@ -23,7 +23,7 @@ urlpatterns = [
     path('', views.order_root),
     path('orders/', views.order_list, name='orders'),
     path('orders/new/', views.order_new, name='orders'),
-    path('orders/edit/<pk>/', views.order_save, name='orders'),
+    path('orders/edit/<pk>/', views.order_edit, name='orders'),
     path('orders/del/<pk>/', views.order_del, name='orders'),
     
     path('login/', views.login_view, name='login'),

@@ -92,6 +92,7 @@
       totalForms.value = parseInt(totalForms.value) - 1; 
     }    
   }
+
   async function onChange(element){
     const totalForms = document.getElementById("itemModalBodyLines");
     const elemArray = element.id.split("-");
@@ -105,9 +106,9 @@
         elemSumma.value = elemCount.value*elemPrice.value;
         break;
       case "summa": 
-         if(elemCount.value != 0){
-            elemPrice.value = elemSumma.value/elemCount.value;
-         }
+        if(elemCount.value != 0){
+           elemPrice.value = (elemSumma.value/elemCount.value).toFixed(2)
+        }
         break;
     } 
 

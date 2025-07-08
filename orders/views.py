@@ -62,18 +62,8 @@ def order_list(request):
 def order_new(request):
     org = get_organization_by_request(request)
     if request.method == 'POST':
-        order_form = OrderForm(request.POST)
-        assort_formset = OrderAssortFormSet(request.POST)
-        if order_form.is_valid() and assort_formset.is_valid():
-            order = order_form.save(commit=False)
-            if org is not None:
-                order.organization = org
-            order.save()
-            assorts = assort_formset.save(commit=False) 
-            for assort in assorts:
-                assort.order = order
-                assort.save()
-        return redirect('/orders')        
+        order_save(request)
+        return redirect('/orders')
     else:
         order_form = OrderForm(org=org)
         assort_formset = OrderAssortFormSet()
@@ -83,40 +73,57 @@ def order_new(request):
                           'assort_formset': assort_formset
                       })             
 
-
-def order_save(request, pk):
+def order_edit(request, pk):
     org = get_organization_by_request(request)
     order = OrderModel.objects.get(pk=pk)
     if request.method == 'POST':
+        order_save(request, order)
+        return redirect('/orders')
+    else:
+        order_form = OrderForm(instance=order, org=org)
+        assort_formset = OrderAssortFormSet(instance=order)
+        return render(request, 'order_all_item.html',
+                      {
+                          'order_form': order_form,
+                          'assort_formset': assort_formset
+                      })
+
+def order_save(request, order=None):
+    org = get_organization_by_request(request)
+    if order is None:
+        order_form = OrderForm(request.POST)
+        assort_formset = OrderAssortFormSet(request.POST)
+    else:
         order_form = OrderForm(request.POST, instance=order)     
         assort_formset = OrderAssortFormSet(request.POST, instance=order)
         if order_form.is_valid() and assort_formset.is_valid():
+
             if org is None:
                 order = order_form.save()
             else: 
                 order = order_form.save(commit=False)
                 order.organization = org
-                order.save()    
-            assorts = assort_formset.save(commit=False) 
+                order.save()
+
+            assorts = assort_formset.save(commit=False)
+            # order-summa
+            order.summa = 0
+            for assort in assorts:
+               order.summa += assort.summa
+
+            order.save()
+
+            assorts = assort_formset.save(commit=False)
             for assort in assorts:
                 assort.order = order
                 assort.save()
-        return redirect('/orders')        
-    else:    
-        order_form = OrderForm(instance=order, org=org)
-        assort_formset = OrderAssortFormSet(instance=order)
-        return render(request, 'order_all_item.html', 
-                      {
-                          'order_form': order_form,
-                          'assort_formset': assort_formset
-                      })             
 
 def order_del(request, pk):   
     if request.method == 'POST':
         order = OrderModel.objects.get(pk=pk)
         if order is not None:
             order.delete()
-        return redirect('/orders')           
+    return redirect('/orders')
 
 def order_root(request):
     return redirect('orders/') 

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
-import uuid, decimal
+import uuid
+from django.db.models import Sum
 
 class OrganizationModel(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4)
@@ -31,6 +32,8 @@ class OrderModel(models.Model):
     date = models.DateField(auto_created=True,blank=True, null=True)
     organization = models.ForeignKey(OrganizationModel, on_delete = models.CASCADE, blank=True, null=True)
     comment = models.TextField(default="")
+    summa = models.DecimalField(max_digits=19, decimal_places=2, default=0)
+
 
 class OrderAssortmentTableModel(models.Model):
     order = models.ForeignKey(OrderModel, on_delete = models.CASCADE)
