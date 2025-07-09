@@ -31,13 +31,13 @@ class OrderModel(models.Model):
     number = models.CharField(max_length=50,default="")
     date = models.DateField(auto_created=True,blank=True, null=True)
     organization = models.ForeignKey(OrganizationModel, on_delete = models.CASCADE, blank=True, null=True)
-    comment = models.TextField(default="")
-    summa = models.DecimalField(max_digits=19, decimal_places=2, default=0)
+    comment = models.TextField(default="",blank=True)
+    summa = models.DecimalField(max_digits=19, decimal_places=2, default=0, blank=True, null=True)
 
 
 class OrderAssortmentTableModel(models.Model):
     order = models.ForeignKey(OrderModel, on_delete = models.CASCADE)
-    num = models.PositiveIntegerField(default=1)
+    #num = models.PositiveIntegerField(default=1)
     assortiment = models.ForeignKey(AssortmentModel, on_delete = models.PROTECT)
     count = models.DecimalField(max_digits=19, decimal_places=0, default=0)
     price = models.DecimalField(max_digits=19, decimal_places=2, default=0)

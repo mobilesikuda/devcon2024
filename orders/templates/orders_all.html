@@ -88,8 +88,10 @@
     const totalForms = document.getElementById("itemModalBodyLines"); 
     const currentLine   = curDelete.parentNode.parentNode; //.lastElementChild;
     if( totalForms.children.length > 6){
-      totalForms.removeChild(currentLine);
-      totalForms.value = parseInt(totalForms.value) - 1; 
+      //currentLine.hidden = true;
+      curDelete.parentNode.children[0].children[0].checked = true;
+      //totalForms.removeChild(currentLine);
+      //totalForms.value = parseInt(totalForms.value) - 1; 
     }    
   }
 

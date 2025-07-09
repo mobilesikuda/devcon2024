@@ -96,27 +96,28 @@ def order_save(request, order=None):
     else:
         order_form = OrderForm(request.POST, instance=order)     
         assort_formset = OrderAssortFormSet(request.POST, instance=order)
-        if order_form.is_valid() and assort_formset.is_valid():
 
-            if org is None:
-                order = order_form.save()
-            else: 
-                order = order_form.save(commit=False)
-                order.organization = org
-                order.save()
+    assorts = assort_formset.save(commit=False)
+    
+    if order_form.is_valid() and assort_formset.is_valid():
 
-            assorts = assort_formset.save(commit=False)
-            # order-summa
-            order.summa = 0
-            for assort in assorts:
-               order.summa += assort.summa
-
+        if org is None:
+            order = order_form.save()
+        else: 
+            order = order_form.save(commit=False)
+            order.organization = org
             order.save()
 
-            assorts = assort_formset.save(commit=False)
-            for assort in assorts:
-                assort.order = order
-                assort.save()
+        order.summa = 0
+        for item in assort_formset.cleaned_data:
+            if "summa" in item:
+                order.summa += item['summa']
+        order.save()    
+
+        assorts = assort_formset.save(commit=False)
+        for assort in assorts:
+            assort.order = order
+            assort.save()
 
 def order_del(request, pk):   
     if request.method == 'POST':
