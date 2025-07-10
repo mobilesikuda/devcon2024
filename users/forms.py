@@ -1,6 +1,6 @@
 from django import forms
-from django.core.validators import MaxLengthValidator
-from .models import Feedback
+from .models import Feedback, FeedbackComment
+from django.forms import inlineformset_factory
 
 class FeedbackForm(forms.Form):
     name = forms.CharField(
@@ -20,8 +20,16 @@ class FeedbackForm(forms.Form):
         self.fields['email'].label = "Электронная почта"
         self.fields['comment'].label = "Комментарий"
 
-    def clean_comment(self):
-        comment = self.cleaned_data.get('comment')
-        if Feedback.objects.filter(comment=comment).exists() :
-            raise forms.ValidationError("Комментарий такой уже существует.")
-        return comment    
+    # def clean_comment(self):
+    #     comment = self.cleaned_data.get('comment')
+    #     if Feedback.objects.filter(comment=comment).exists() :
+    #         raise forms.ValidationError("Комментарий такой уже существует.")
+    #     return comment 
+
+FeedbackCommentFormSet = inlineformset_factory(
+    parent_model=Feedback,  # Родительская модель
+    model=FeedbackComment,  # Модель, которая будет редактироваться через inline-формы
+    fields=['comment'],  # Поля, доступные для изменения
+    extra=2,  # Количество дополнительных пустых форм
+    can_delete=True, # Возможность удалять связанные объекты
+)

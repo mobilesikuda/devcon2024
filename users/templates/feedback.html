@@ -1,6 +1,13 @@
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+    {{ from_table.management_form }}
+    {% for item in form_table %}
+    <div class="d-flex py-1 inline {{ product_meta_formset.prefix }}">
+        <div>{{item.comment.label}}: {{ item.comment }}</div>
+        <div class="ml-4">{{ item.DELETE }} {{ item.DELETE.label }}</div>
+    </div>
+    {% endfor %}
     <button type="submit">Отправить</button>
 </form>
 
