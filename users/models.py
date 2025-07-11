@@ -6,7 +6,7 @@ class Feedback(models.Model):
     comment = models.TextField(max_length=1024) 
 
 class FeedbackComment(models.Model):
-    feedback = models.ForeignKey(Feedback,on_delete = models.CASCADE)
+    feedback = models.ForeignKey(Feedback,on_delete = models.CASCADE,blank=False)
     comment = models.TextField(max_length=1024) 
 
 

@@ -1,6 +1,7 @@
 from django import forms
 from .models import Feedback, FeedbackComment
 from django.forms import inlineformset_factory
+from django.forms.models import BaseInlineFormSet
 
 
 class FeedbackForm(forms.ModelForm):
@@ -44,10 +45,14 @@ class FeedbackForm(forms.ModelForm):
 #     #         raise forms.ValidationError("Комментарий такой уже существует.")
 #     #     return comment 
 
+class BaseChildrenFormset(BaseInlineFormSet):
+    pass
+
 FeedbackCommentFormSet = inlineformset_factory(
     parent_model=Feedback,  # Родительская модель
     model=FeedbackComment,  # Модель, которая будет редактироваться через inline-формы
-    fields=['comment'],  # Поля, доступные для изменения
-    extra=2,  # Количество дополнительных пустых форм
-    can_delete=True, # Возможность удалять связанные объекты
+    formset=BaseChildrenFormset,
+    fields='__all__',  # Поля, доступные для изменения
+    extra=1,  # Количество дополнительных пустых форм
+    #can_delete=True, # Возможность удалять связанные объекты
 )

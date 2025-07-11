@@ -31,19 +31,20 @@ def feedback_post(request):
     return render(request, 'feedback.html', {'form': form, 'form_table':form_table})
 
 def feedback_edit(request, pk):
-    post = Feedback.objects.get(pk=pk)
+    feedback = Feedback.objects.get(pk=pk)
     if request.method == 'POST':
-        form = FeedbackForm(request.POST,instance=post)
-        form_table = FeedbackCommentFormSet(request.POST, instance=post)
-        feedback = form.save()
-        table = form_table.save(commit=False)
-        for item in table:
-            item.feedback = feedback
-            item.save()
-
-        return HttpResponse("Редактирование завешено!")
-    else:
-        form = FeedbackForm(instance=post)
-        form_table = FeedbackCommentFormSet(instance=post)
-        return render(request, 'feedback.html', {'form': form, 'form_table':form_table})
+        form = FeedbackForm(request.POST,instance=feedback)
+        form_table = FeedbackCommentFormSet(request.POST,instance=feedback)
+        if form.is_valid(): #and form_table.is_valid():
+            feedback = form.save()
+            table = form_table.save(commit=False)
+            for item in table:
+                item.feedback = feedback
+                item.save()
+        
+            return HttpResponse("Редактирование завешено!")
+    
+    form = FeedbackForm(instance=feedback)
+    form_table = FeedbackCommentFormSet(instance=feedback)
+    return render(request, 'feedback.html', {'form': form, 'form_table':form_table})
         
