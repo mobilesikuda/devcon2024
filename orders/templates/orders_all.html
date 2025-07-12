@@ -80,19 +80,40 @@
   }
   async function onNewLine(){ 
     const totalForms = document.getElementById("itemModalBodyLines");
+    const lastLine = totalForms.lastElementChild;
+    const elemArray = lastLine.children[0].children[0].id.split("-");
+    const newCountId = elemArray[1].replace(/(\d+)+/g, function(match, number) {
+       return parseInt(number)+1;
+    });
     const clonedLine   = totalForms.lastElementChild.cloneNode(true);
+    for(item in clonedLine.children){
+      setIdElem(clonedLine.children[item], elemArray, newCountId)
+      for(item2 in clonedLine.children[item].children){
+        setIdElem(clonedLine.children[item].children[item2], elemArray, newCountId)
+      }
+    }
     totalForms.appendChild(clonedLine);
-    totalForms.value = parseInt(totalForms.value) + 1;
+    //totalForms.value = parseInt(totalForms.value) + 1;
   }
+
   async function onDeleteLine(curDelete){
     const totalForms = document.getElementById("itemModalBodyLines"); 
     const currentLine   = curDelete.parentNode.parentNode; //.lastElementChild;
     if( totalForms.children.length > 6){
-      //currentLine.hidden = true;
+      currentLine.hidden = true;
       curDelete.parentNode.children[0].children[0].checked = true;
       //totalForms.removeChild(currentLine);
       //totalForms.value = parseInt(totalForms.value) - 1; 
     }    
+  }
+
+  function setIdElem(item, elemArray, newCountId){
+    if(item && elemArray.length == 3){
+      const strId = item.id;
+      if(typeof strId === 'string' && strId.startsWith(elemArray[0])){
+         item.id = elemArray[0]+"-"+newCountId+"-"+elemArray[2]
+      }   
+    }
   }
 
   async function onChange(element){

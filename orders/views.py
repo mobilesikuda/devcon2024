@@ -115,9 +115,12 @@ def order_save(request, order=None):
         order.save()    
 
         assorts = assort_formset.save(commit=False)
-        for assort in assorts:
-            assort.order = order
-            assort.save()
+        for item in assorts:
+            item.order = order
+            item.save()
+
+        for item in assort_formset.deleted_objects:
+            item.delete()    
 
 def order_del(request, pk):   
     if request.method == 'POST':

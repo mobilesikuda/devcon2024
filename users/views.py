@@ -41,6 +41,9 @@ def feedback_edit(request, pk):
             for item in table:
                 item.feedback = feedback
                 item.save()
+
+            for item in form_table.deleted_objects:
+                item.delete()
         
             return HttpResponse("Редактирование завешено!")
     
