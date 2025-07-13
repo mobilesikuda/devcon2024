@@ -3,7 +3,7 @@
 <div class="input-group mb-3">
     <span class="input-group-text"> Номер </span>
     {{ order_form.number }}
-    <span class="input-group-text"> от </span>
+    <span class="input-group-text mx-1"> от </span>
     {{ order_form.date }}
 </div>
 <div class="input-group mb-3">
@@ -27,17 +27,17 @@
             <div class="col-6">    
             {{ form.assortiment }}
             </div>
-            <div class="col-1">
+            <div class="col-1 px-1">
             {{ form.count }}
             </div>
             <div class="col-2">
             {{ form.price }}
             </div>
-            <div class="col-2">
+            <div class="col-2 px-1">
             {{ form.summa }}
             </div>
             <div class="col-1">
-                <div>{{ form.DELETE }}</div>
+                <div hidden>{{ form.DELETE }}</div>
                 <button type="button" class="btn btn-outline-secondary" onclick="onDeleteLine(this)">Удалить</button>
             </div>
         </div>

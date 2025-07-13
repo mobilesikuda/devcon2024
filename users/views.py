@@ -35,7 +35,7 @@ def feedback_edit(request, pk):
     if request.method == 'POST':
         form = FeedbackForm(request.POST,instance=feedback)
         form_table = FeedbackCommentFormSet(request.POST,instance=feedback)
-        if form.is_valid(): #and form_table.is_valid():
+        if form.is_valid() and form_table.is_valid():
             feedback = form.save()
             table = form_table.save(commit=False)
             for item in table:
