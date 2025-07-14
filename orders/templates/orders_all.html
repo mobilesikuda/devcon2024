@@ -82,7 +82,7 @@
   }
   async function onNewLine(){ 
 
-     const totalForms = document.getElementById("itemModalBodyLines");
+    const totalForms = document.getElementById("itemModalBodyLines");
     let lines = totalForms.querySelectorAll('.input-group');
     if( totalForms && lines.length > 0 ){
       const num = lines.length;
@@ -95,7 +95,7 @@
     } 
 
 
-    {% comment %} const totalForms = document.getElementById("itemModalBodyLines");
+    <!-- {% comment %} const totalForms = document.getElementById("itemModalBodyLines");
     const lastLine = totalForms.lastElementChild;
     const elemArray = lastLine.children[0].children[0].id.split("-");
     const newCountId = elemArray[1].replace(/(\d+)+/g, function(match, number) {
@@ -110,7 +110,9 @@
     }
     totalForms.appendChild(clonedLine);
     const countForms = document.getElementById("id_orderassortmenttablemodel_set-TOTAL_FORMS")
-    countForms.value = parseInt(countForms.value)+1; {% endcomment %}
+    countForms.value = parseInt(countForms.value)+1; 
+    {% endcomment %}
+    -->
   }
   async function onDeleteLine(curDelete){
     const totalForms = document.getElementById("itemModalBodyLines"); 
@@ -166,6 +168,6 @@
         lines[num-i].style.display = 'none';
       }   
     }     
-  }
+  } 
 </script>
 {% endblock %}
