@@ -10,8 +10,8 @@
       <thead>
         <tr class="align-items-center"> 
           <th>Номен заказа</th>
-          <th>Дата заказа</th>
-          <th>Организация</th>
+          <th class="">Дата заказа</th>
+          <th class="d-none d-lg-table">Организация</th>
           <th>Комментарий</th>
           <th class='d-print-none'>Действие</th>
         </tr>
@@ -20,8 +20,8 @@
         {% for x in context %}
           <tr>
               <td class="col-2">{{ x.number }}</td>
-              <td class="col-2">{{ x.date }}</td>
-              <td>{{ x.organization.name }}</td>
+              <td class="">{{ x.date }}</td>
+              <td class="d-none d-lg-block">{{ x.organization.name }}</td>
               <td>{{ x.comment }}</td>
               <td class="col-2"><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#itemModal" onclick="onViewItem('{{x.pk}}')">Редактор</button></td>
           </tr>
