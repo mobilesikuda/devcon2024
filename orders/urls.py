@@ -27,6 +27,7 @@ urlpatterns = [
     path('orders/del/<pk>/', views.order_del, name='orders'),
     
     path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
     #path('accounts/profile/', views.order_root),
     #path('accounts/profile/orders', views.order_root),
     #path('orders-api/', views.OrdersListAPI.as_view(), name='article-api'),

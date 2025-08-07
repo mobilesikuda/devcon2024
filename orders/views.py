@@ -7,7 +7,7 @@ from django.template import loader
 from .models import OrderModel, ManagerModel
 from .forms import OrderForm, OrderAssortFormSet
 from .serializers import OrderSerializer
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, logout, authenticate
 from .forms import LoginForm
 
 def login_view(request):
@@ -21,6 +21,13 @@ def login_view(request):
                 login(request, user)     
                 return redirect('/orders')  
     return render(request, 'login.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    # Optional: Add a success message using Django's messages framework
+    # messages.success(request, "You have been logged out.")
+    return redirect('/') 
+
 
 def get_organization_by_request(request):
     org = None
