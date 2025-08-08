@@ -8,10 +8,10 @@
   </div>
   <table class="table table-striped table-bordered">
       <thead>
-        <tr class="align-items-center"> 
-          <th>Номен заказа</th>
-          <th class="">Дата заказа</th>
-          <th class="d-none d-lg-table">Организация</th>
+        <tr> 
+          <th>Номер заказа</th>
+          <th>Дата заказа</th>
+          <th class="d-none d-lg-block">Организация</th>
           <th>Комментарий</th>
           <th class='d-print-none'>Действие</th>
         </tr>
@@ -19,11 +19,11 @@
       <tbody class="table-group-divider">
         {% for x in context %}
           <tr>
-              <td class="col-2">{{ x.number }}</td>
-              <td class="">{{ x.date }}</td>
+              <td class="col-1">{{ x.number }}</td>
+              <td class="col-1">{{ x.date|date:"d.m.Y" }}</td>
               <td class="d-none d-lg-block">{{ x.organization.name }}</td>
-              <td>{{ x.comment }}</td>
-              <td class="col-2"><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#itemModal" onclick="onViewItem('{{x.pk}}')">Редактор</button></td>
+              <td class="col-6">{{ x.comment }}</td>
+              <td class="d-print-none col-1"><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#itemModal" onclick="onViewItem('{{x.pk}}')">Редактор</button></td>
           </tr>
         {% endfor %}
       </tbody>
@@ -37,7 +37,7 @@
           <h4 class="modal-title" id="itemModalTitle"></h4>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body container" id="itemModalBody">
+        <div class="modal-body" id="itemModalBody"> <!-- container -->
         </div>
         <div class="modal-footer">
           <div class="hstack gap-3">

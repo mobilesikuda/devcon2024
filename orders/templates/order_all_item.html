@@ -15,31 +15,35 @@
     <span class="input-group-text"> Комментарий </span>
     {{ order_form.comment }}
 </div>
-<div class="modal-body container" id="itemModalBodyLines">
-    <div class="input-group mb-3">
-        <button type="button" class="btn btn-secondary" onclick="onNewLine()">Новая строка</button>
-    </div>
+<div class="input-group mb-3" id="itemModalBodyLines"> 
+    <div class="navbar navbar-expand-lg bg-body-tertiary w-100">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <button type="button" class="btn btn-secondary" onclick="onNewLine()">Новая строка</button>
+        </li>
+      </ul>
+    </div> 
     {{ assort_formset.management_form }}
     {% for form in assort_formset %}
         {% for hidden in form.hidden_fields %}
             {{ hidden }}
         {% endfor %}
-        <div class="input-group mb-1">
-            <div class="col-4">    
+        <div class="input-group">
+            <div class="col-6">    
             {{ form.assortiment }}
             </div>
-            <div class="col-2 px-1">
+            <div class="col-1">
             {{ form.count }}
             </div>
             <div class="col-2">
             {{ form.price }}
             </div>
-            <div class="col-2 px-1">
+            <div class="col-2">
             {{ form.summa }}
             </div>
-            <div class="col-2">
+            <div class="col-1 px-2">
                 <div hidden>{{ form.DELETE }}</div>
-                <button type="button" class="btn btn-outline-secondary" onclick="onDeleteLine(this)">Удалить</button>
+                <button type="button" class="btn btn-danger" onclick="onDeleteLine(this)">X</button>
             </div>
         </div>
     {% endfor %}
